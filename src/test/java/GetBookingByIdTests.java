@@ -34,6 +34,5 @@ Response response = given()
         Assertions.assertEquals("Allen", lastname);
         Assertions.assertEquals(111, totalprice);
 
-
     }
 }
