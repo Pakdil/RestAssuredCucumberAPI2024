@@ -1,10 +1,12 @@
+package com.hotelreservation;
+
 import io.restassured.response.Response;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import static io.restassured.RestAssured.given;
 
-public class GetBookingByIdTests {
+public class GetBookingByIdTests extends BaseTest {
 
     @Test
 
@@ -13,9 +15,13 @@ public class GetBookingByIdTests {
         // Create call
         // Check response
         // https://restful-booker.herokuapp.com/booking/1
+
+        Response newBooking = createBooking();
+        int reservationId = newBooking.jsonPath().getJsonObject("bookingid");
+
 Response response = given()
         .when()
-        .get("https://restful-booker.herokuapp.com/booking/633");
+        .get("https://restful-booker.herokuapp.com/booking/" + reservationId);
 
 //        .log().all()
 //        .statusCode(200);
@@ -30,9 +36,10 @@ Response response = given()
         String lastname = response.jsonPath().getJsonObject("lastname");
         int totalprice = response.jsonPath().getJsonObject("totalprice");
 
-        Assertions.assertEquals("Josh", firstname);
-        Assertions.assertEquals("Allen", lastname);
-        Assertions.assertEquals(111, totalprice);
+        Assertions.assertEquals("Ahmet", firstname);
+        Assertions.assertEquals("Pakdil", lastname);
+        Assertions.assertEquals(2500, totalprice);
+
 
     }
 }
