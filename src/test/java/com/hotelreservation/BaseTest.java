@@ -26,6 +26,11 @@ protected String bookingObject( String firstName, String lastName, int totalPric
     return body.toString();
 }
 
+protected int createBookingId() {
+    Response response = createBooking();
+    return response.jsonPath().getJsonObject("bookingid");
+}
+
 protected Response createBooking () {
 
     Response response = given()
