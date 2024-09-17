@@ -1,7 +1,6 @@
 package com.hotelreservation;
 
 import io.restassured.http.ContentType;
-import io.restassured.internal.common.assertion.Assertion;
 import io.restassured.response.Response;
 import org.json.JSONObject;
 import org.junit.jupiter.api.Assertions;
@@ -41,14 +40,13 @@ public class PartiallyUpdateBookingTests extends BaseTest{
         JSONObject body = new JSONObject();
         body.put("firstname", "Ali");
 
-Response response = given()
+Response response = given(spec)
         .contentType((ContentType.JSON))
         .header("Cookie", "token=" + createToken())
         .body(body.toString())
         .when()
-        .patch("https://restful-booker.herokuapp.com/booking/" +createBookingId());
+        .patch("/booking/" + createBookingId());
 
-response.prettyPrint();
 
 // Assertions
 

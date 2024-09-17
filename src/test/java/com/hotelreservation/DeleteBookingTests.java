@@ -18,13 +18,11 @@ public class DeleteBookingTests extends BaseTest{
 //    -H 'Content-Type: application/json' \
 //    -H 'Cookie: token=abc123'
 
-    Response response = given()
+    Response response = given(spec)
             .contentType(ContentType.JSON)
             .header("Cookie", "token=" + createToken())
             .when()
-            .delete("https://restful-booker.herokuapp.com/booking/" + createBookingId());
-
-    response.prettyPrint();
+            .delete("/booking/" + createBookingId());
 
     response
             .then()

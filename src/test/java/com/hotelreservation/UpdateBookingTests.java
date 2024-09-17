@@ -49,13 +49,12 @@ public class UpdateBookingTests extends BaseTest {
 
    // Request
 
-    Response response = given()
+    Response response = given(spec)
             .contentType(ContentType.JSON)
             .header("Cookie", "token=" +token)
             .body(bookingObject("Aysenur", "Pakdil", 3500, false))
-            .put("https://restful-booker.herokuapp.com/booking/" +bookingId);
+            .put("/booking/" +bookingId);
 
-    response.prettyPrint();
 
     // Assertion/Test
 

@@ -1,30 +1,29 @@
 package com.hotelreservation;
 
+import io.restassured.builder.RequestSpecBuilder;
+import io.restassured.filter.log.RequestLoggingFilter;
+import io.restassured.filter.log.ResponseLoggingFilter;
 import io.restassured.http.ContentType;
 import io.restassured.response.Response;
+import io.restassured.specification.RequestSpecification;
 import org.json.JSONObject;
+import org.junit.jupiter.api.BeforeEach;
+
+import java.util.Arrays;
 
 import static io.restassured.RestAssured.given;
 
 public class BaseTest {
+    RequestSpecification spec;
 
-protected String bookingObject( String firstName, String lastName, int totalPrice, boolean depositPaid) {
+    @BeforeEach
+    public void setup() {
+        spec = new RequestSpecBuilder()
+                .setBaseUri("https://restful-booker.herokuapp.com")
+                .addFilters(Arrays.asList(new RequestLoggingFilter(), new ResponseLoggingFilter()))
+                .build();
 
-    JSONObject body = new JSONObject();
-    body.put("firstname", firstName);
-    body.put("lastname", lastName);
-    body.put("totalprice", totalPrice);
-    body.put("depositpaid", depositPaid);
-
-    JSONObject bookingdates = new JSONObject();
-    bookingdates.put("checkin", "2024-01-05");
-    bookingdates.put("checkout", "2024-01-15");
-
-    body.put("bookingdates", bookingdates);
-    body.put("additonalneeds", "Breakfast");
-
-    return body.toString();
-}
+    }
 
 protected int createBookingId() {
     Response response = createBooking();
@@ -33,13 +32,13 @@ protected int createBookingId() {
 
 protected Response createBooking () {
 
-    Response response = given()
+    Response response = given(spec)
             .when()
             .contentType(ContentType.JSON)
             .body(bookingObject("Ahmet", "Pakdil", 2500, true))
-            .post("https://restful-booker.herokuapp.com/booking");
+            .post("/booking");
 
-    response.prettyPrint();
+//    response.prettyPrint();
 
     response
             .then()
@@ -47,19 +46,37 @@ protected Response createBooking () {
     return response;
 }
 
+    protected String bookingObject( String firstName, String lastName, int totalPrice, boolean depositPaid) {
+
+        JSONObject body = new JSONObject();
+        body.put("firstname", firstName);
+        body.put("lastname", lastName);
+        body.put("totalprice", totalPrice);
+        body.put("depositpaid", depositPaid);
+
+        JSONObject bookingdates = new JSONObject();
+        bookingdates.put("checkin", "2024-01-05");
+        bookingdates.put("checkout", "2024-01-15");
+
+        body.put("bookingdates", bookingdates);
+        body.put("additonalneeds", "Breakfast");
+
+        return body.toString();
+    }
+
     protected String createToken () {
 
         JSONObject body = new JSONObject();
         body.put("username", "admin");
         body.put("password", "password123");
 
-        Response response = given().contentType(ContentType.JSON)
+        Response response = given(spec)
+                .contentType(ContentType.JSON)
                 .when()
                 .body(body.toString())
-                .log().all()
-                .post("https://restful-booker.herokuapp.com/auth");
+                .post("/auth");
 
-        response.prettyPrint();
+
         return response.jsonPath().getJsonObject("token");
 
     }
